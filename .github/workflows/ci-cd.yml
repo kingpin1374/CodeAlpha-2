@@ -1,0 +1,38 @@
+name: Java CI/CD Pipeline with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Execute Gradle Build and Tests
+      run: ./gradlew build
+
+  docker-image:
+    needs: build-and-test # Only runs if the build/tests pass
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Build Docker Image
+      run: docker build -t my-java-app:latest .
+      
+    # In a real scenario, the next step would be: docker push <your-registry>/my-java-app:latest
