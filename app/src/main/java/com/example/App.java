@@ -1,17 +1,16 @@
-package com.example;
-
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-
 public class App {
+    // Add this method so the test can find it
+    public String getGreeting() {
+        return "Hello from your Automated Java Pipeline!";
+    }
+
     public static void main(String[] args) throws IOException {
         int port = 8080;
+        App app = new App(); // Create instance to call the method
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         
         server.createContext("/", (exchange -> {
-            String response = "Hello from your Automated Java Pipeline!";
+            String response = app.getGreeting(); // Use the method here
             exchange.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
